@@ -8,17 +8,24 @@
  * @param {number[]} B
  * @return {number}
  */
-var findLength = function (A, B, a = 0) {
-  if (!A.length || !B.length) return a;
-  if (A[A.length - 1] === B[B.length - 1]) {
-    return Math.max(findLength(A.slice(0, A.length - 1), B.slice(0, B.length - 1), a + 1), a + 1)
-  } else {
-    return Math.max(
-      findLength(A.slice(0, A.length - 1), B),
-      findLength(A, B.slice(0, B.length - 1)),
-      a
-    )
+var findLength = function (A, B) {
+  let dep = [];
+  let max = 0
+  for (let i = 0; i <= A.length; i++) {
+    dep[i] = [];
+    for (let j = 0; j <= B.length; j++) {
+      if (i === 0 || j === 0) {
+        dep[i][j] = 0;
+      } else {
+        if (A[i - 1] === B[j - 1]) {
+          dep[i][j] = dep[i - 1][j - 1] + 1;
+          max = Math.max(dep[i][j], max)
+        } else {
+          dep[i][j] = 0
+        }
+      }
+    }
   }
+  return max
 };
 
-console.log(findLength([0, 0, 0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 1, 0, 0]));
