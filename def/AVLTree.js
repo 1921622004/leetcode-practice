@@ -74,7 +74,7 @@ class AVLTree {
         node = this.doubleRotateWithLeftChild(node);
       }
     }
-    node.height = Math.max(leftChildHeight, rightChildHeight) + 1;
+    node.height = Math.max(this._getHeight(node.left), this._getHeight(node.right)) + 1;
     return node
   }
 
