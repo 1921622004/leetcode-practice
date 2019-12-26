@@ -35,15 +35,15 @@ var preorderTraversal = function (root) {
 };
 // @lc code=end
 
-console.log(preorderTraversal({
-  val: 1,
-  left: null,
-  right: {
-    val: 2,
-    left: {
-      val: 3,
-      left: null,
-      right: null
-    }
-  }
-}));
+// console.log(preorderTraversal({
+//   val: 1,
+//   left: null,
+//   right: {
+//     val: 2,
+//     left: {
+//       val: 3,
+//       left: null,
+//       right: null
+//     }
+//   }
+// }));
