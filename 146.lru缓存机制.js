@@ -1,12 +1,27 @@
+/*
+ * @lc app=leetcode.cn id=146 lang=javascript
+ *
+ * [146] LRU缓存机制
+ */
+
+// @lc code=start
+var LinkedListNode = function (val, key) {
+  this.val = val;
+  this.key = key;
+  this.prev = null;
+  this.next = null;
+}
+
 /**
  * @param {number} capacity
  */
 var LRUCache = function (capacity) {
+  this.map = new Map();
+  this.head = new LinkedListNode();
+  this.tail = new LinkedListNode();
+  this.head.next = this.tail;
+  this.tail.prev = this.head;
   this.capacity = capacity;
-  this.count = 0;
-  this.map = {};
-  this.head = null;
-  this.tail = null;
 };
 
 /** 
@@ -14,28 +29,11 @@ var LRUCache = function (capacity) {
  * @return {number}
  */
 LRUCache.prototype.get = function (key) {
-  console.log(this);
-  if (!this.map[key]) return -1;
-  const { prev, next } = this.map[key];
-  if (this.map[key] === this.head) return this.head.value;
-  if (this.map[key] === this.tail) {
-    // 如果当前选择的节点是尾节点
-    this.tail = this.tail.prev;
-    this.tail.next = null;
-    this.map[key].next = this.head;
-    this.head.prev = this.map[key];
-    this.head = this.map[key];
-    this.head.prev = null;
-    return this.map[key].value
-  }
-  if (prev) {
-    prev.next.next = next ? next.next : null;
-  }
-  this.map[key].next = this.head;
-  this.head = this.map[key];
-  this.head.prev = null;
-  return this.map[key].value
-  // 将当前节点移到头部 
+  let node = this.map.get(key);
+  if (!node) return -1;
+  this.removeNode(node);
+  this.addNodeToHead(node);
+  return node.val
 };
 
 /** 
@@ -44,33 +42,47 @@ LRUCache.prototype.get = function (key) {
  * @return {void}
  */
 LRUCache.prototype.put = function (key, value) {
-  console.log(this);
-  if (this.head) {
-    if (this.count >= this.capacity) {
-      const { prev, key } = this.tail;
-      if (prev) prev.next = null;
-      this.tail = prev;
-      delete this.map[key];
-      this.count--;
+  let prev = this.map.get(key);
+  if (prev) {
+    if (prev.val !== value) {
+      this.removeNode(prev);
+      prev.val = value;
+      this.addNodeToHead(prev);
     }
-    let temp = this.head;
-    this.map[key] = this.head = {
-      key, value, prev: null, next: this.head
-    }
-    temp.prev = this.head;
-    this.count++;
   } else {
-    // 存到hashmap 记录头节点， 尾节点
-    this.map[key] = this.head = this.tail = {
-      key,
-      value,
-      prev: null,
-      next: null
-    };
-    this.count++;
+    let node = new LinkedListNode(value, key);
+    this.addNodeToHead(node);
+    this.map.set(key, node);
+    this.capacity--;
+    if (this.capacity < 0) {
+      this.removeTail();
+      this.capacity++;
+    }
   }
-
 };
+
+LRUCache.prototype.addNodeToHead = function (node) {
+  node.next = this.head.next;
+  node.prev = this.head;
+  this.head.next && (this.head.next.prev = node);
+  this.head.next = node;
+}
+
+LRUCache.prototype.removeTail = function () {
+  const prev = this.tail.prev;
+  this.tail.prev = prev.prev;
+  prev.prev.next = this.tail;
+  this.map.delete(prev.key);
+  // this.removeNode(prev);
+}
+
+/**
+ * @param {LinkedListNode} node
+ */
+LRUCache.prototype.removeNode = function (node) {
+  node.prev.next = node.next;
+  node.next.prev = node.prev;
+}
 
 /**
  * Your LRUCache object will be instantiated and called as such:
@@ -78,11 +90,13 @@ LRUCache.prototype.put = function (key, value) {
  * var param_1 = obj.get(key)
  * obj.put(key,value)
  */
+// @lc code=end
 
-let cache = new LRUCache( 1 /* 缓存容量 */ );
+// let cache = new LRUCache(2);
 
-console.log(cache.put(2,1))
-console.log(cache.get(2))
-console.log(cache.put(3,2))
-console.log(cache.get(2))
-console.log(cache.get(3))
+// console.log(cache.put(2, 1));
+// console.log(cache.put(1, 1));
+// console.log(cache.put(2, 3));
+// console.log(cache.put(4, 1));
+// console.log(cache.get(1));
+// console.log(cache.get(2));
