@@ -42,12 +42,18 @@ class AVLTree {
   _remove(val, node) {
     if (!node) return node;
     if (node.val > val) {
-      node.left = this._remove(node.left)
+      node.left = this._remove(val, node.left)
     } else if (node.val < val) {
-      node.right = this._remove(node.right)
+      node.right = this._remove(val, node.right)
     } else if (node.left && node.right) {
       node.val = this.findMin(node.right).val;
       node.right = this._remove(node.val, node.right);
+    } else if (node.left) {
+      return this.balance(node.left)
+    } else if (node.right) {
+      return this.balance(node.right);
+    } else {
+      return null
     }
     return this.balance(node);
   }
@@ -111,9 +117,9 @@ class AVLTree {
    * @param {TreeNode} node 
    * @returns {TreeNode}
    */
-  doubleRotateWithLeftChild(node) {
+  doubleRotateWithRightChild(node) {
     node.left = this.rotateLeft(node.left);
-    return this.rotateWithRightChild(node);
+    return this.rotateRight(node);
   }
 
   /**
@@ -121,9 +127,9 @@ class AVLTree {
    * @param {TreeNode} node 
    * @returns {TreeNode}
    */
-  doubleRotateWithRightChild(node) {
-    node.right = this.rotateWithRightChild(node.right);
-    return this.rotateWithLeftChild(node);
+  doubleRotateWithLeftChild(node) {
+    node.right = this.rotateRight(node.right);
+    return this.rotateLeft(node);
   }
 
   /**
@@ -153,13 +159,16 @@ class AVLTree {
 
 module.exports = AVLTree;
 
-let t = new AVLTree();
-t.insert(1);
-t.insert(2);
-t.insert(3);
-t.insert(4);
-t.insert(5);
-t.insert(6);
-t.insert(7);
-// t.insert(16);
-console.log(t);
+// let t = new AVLTree();
+// t.insert(1);
+// t.insert(2);
+// t.insert(3);
+// t.insert(4);
+// t.insert(5);
+// t.insert(6);
+// t.insert(7);
+
+// t.remove(5);
+// t.remove(2);
+// // t.insert(16);
+// console.log(t);
