@@ -15,3 +15,168 @@
  *      - rr l
  *      - rl lr
  */
+
+const RedBlackTreeNode = require('./RedBlackTreeNode');
+const BLACK = 1;
+const RED = 0;
+
+class RedBlackTree {
+  constructor() {
+    this.root = null;
+  }
+
+  /**
+   * 
+   * @param {number} val 
+   * @param {RedBlackTreeNode} node 
+   * @return {RedBlackTreeNode}
+   */
+  _insert(val) {
+    let t = this.root;
+    let p = null;
+    while (t) {
+      p = t;
+      if (t.val < val) {
+        t = t.right;
+      } else if (t.val > val) {
+        t = t.left;
+      } else return;
+    }
+    let node = new RedBlackTreeNode(val);
+    node.parent = p;
+    if (p === null) {
+      this.root = node;
+    } else if (p.val < node.val) {
+      p.right = node;
+    } else {
+      p.left = node;
+    }
+    node.color = RED;
+    this.insertFix(node);
+  }
+
+  /**
+   * 
+   * @param {RedBlackTreeNode} node 
+   */
+  insertFix(node) {
+    while (node.parent && node.parent.color !== BLACK) {
+      if (node.parent === node.parent.parent.left) {
+        let uncleNode = node.parent.parent.right;
+        if (uncleNode && uncleNode.color === RED) {
+          node.parent.color = BLACK;
+          uncleNode.color = BLACK;
+          node.parent.parent.color = RED;
+          node = node.parent.parent;
+        } else if (node === node.parent.right) {
+          node = node.parent;
+          this._rotateLeft(node);
+        } else {
+          node.parent.color = BLACK;
+          node.parent.parent.color = RED;
+          this._rotateRight(node.parent.parent);
+        }
+      } else {
+        let uncleNode = node.parent.parent.left;
+        if (uncleNode && uncleNode.color === RED) {
+          node.parent.color = BLACK;
+          uncleNode.color = BLACK;
+          node.parent.parent.color = RED;
+          node = node.parent.parent;
+        } else if (node === node.parent.left) {
+          node = node.parent;
+          this._rotateRight(node);
+        } else {
+          node.parent.color = BLACK;
+          node.parent.parent.color = RED;
+          this._rotateLeft(node.parent.parent);
+        }
+
+      }
+    }
+    this.root.color = BLACK;
+  }
+
+  /**
+   * 
+   * @param {RedBlackTreeNode} node 
+   * @return {RedBlackTreeNode}
+   */
+  _rotateLeft(node) {
+    let rightNode = node.right;
+    let rightNodeLeft = rightNode.left;
+    node.right = rightNodeLeft;
+    if (rightNodeLeft) rightNodeLeft.parent = node;
+    rightNode.left = node;
+    if (node.parent) {
+      if (node.parent.left === node) {
+        node.parent.left = leftNode;
+      } else {
+        node.parent.right = leftNode;
+      }
+      rightNode.parent = node.parent;
+    } else {
+      this.root = rightNode;
+      rightNode.parent = null;
+    }
+    node.parent = rightNode;
+  }
+
+  /**
+   * 
+   * @param {RedBlackTreeNode} node 
+   * @return {RedBlackTreeNode}
+   */
+  _rotateRight(node) {
+    let leftNode = node.left;
+    let leftNodeRight = leftNode.right;
+    node.left = leftNodeRight;
+    if (leftNodeRight) leftNodeRight.parent = node;
+    leftNode.right = node;
+    if (node.parent) {
+      if (node.parent.left === node) {
+        node.parent.left = leftNode;
+      } else {
+        node.parent.right = leftNode;
+      }
+      leftNode.parent = node.parent;
+    } else {
+      this.root = leftNode;
+      rightNode.parent = null;
+    }
+    node.parent = leftNode;
+  }
+
+  /**
+   * 
+   * @param {number} val 
+   */
+  insert(val) {
+    this._insert(val);
+  }
+
+  /**
+   * 
+   * @param {number} val 
+   * @return {boolean}
+   */
+  remove(val) {
+
+  }
+
+}
+
+const t = new RedBlackTree();
+t.insert(1);
+t.insert(13);
+t.insert(5);
+t.insert(11);
+t.insert(2);
+console.log(t);
+
+// t.insert(14);
+// t.insert(15);
+// t.insert(7);
+// t.insert(8);
+
+module.exports = RedBlackTree;
