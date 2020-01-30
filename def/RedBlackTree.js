@@ -110,9 +110,9 @@ class RedBlackTree {
     rightNode.left = node;
     if (node.parent) {
       if (node.parent.left === node) {
-        node.parent.left = leftNode;
+        node.parent.left = rightNode;
       } else {
-        node.parent.right = leftNode;
+        node.parent.right = rightNode;
       }
       rightNode.parent = node.parent;
     } else {
@@ -172,11 +172,9 @@ t.insert(13);
 t.insert(5);
 t.insert(11);
 t.insert(2);
-console.log(t);
-
-// t.insert(14);
-// t.insert(15);
-// t.insert(7);
-// t.insert(8);
+t.insert(14);
+t.insert(15);
+t.insert(7);
+t.insert(8);
 
 module.exports = RedBlackTree;
