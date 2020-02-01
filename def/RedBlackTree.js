@@ -57,6 +57,144 @@ class RedBlackTree {
 
   /**
    * 
+   * @param {RedBlackTreeNode} node
+   * @param {number} val 
+   * @return {boolean}
+   */
+  _remove(node, val) {
+    while (node.val !== val && node) {
+      if (node.val > val) {
+        node = node.left
+      } else {
+        node = node.right
+      }
+    }
+    if (node) {
+      if (!node.left || !node.right) {
+        this._removeAndFix(node);
+      } else {
+        let minNode = this.findMin(node.right);
+        node.val = minNode.val;
+        this._remove(node.right, val);
+      }
+    } else return false;
+    return true
+  }
+
+  /**
+   * @param {RedBlackTreeNode} node
+   */
+  _removeAndFix(node) {
+    if (node.color === RED) {
+      this._removeNode(node);
+    } else {
+      this._removeFix(node);
+    }
+  }
+
+  /**
+   * 
+   * @param {RedBlackTreeNode} node 
+   */
+  _removeNode(node) {
+    if (node === this.root) {
+      if (node.left) {
+        this.root = node.left;
+        node.parent = null;
+      } else if (node.right) {
+        this.root = node.right;
+        node.parent = null;
+      } else {
+        this.root = null;
+      }
+    } else {
+      if (node.parent.left === node) {
+        if (node.left) {
+          node.parent.left = node.left;
+          node.left.parent = node.parent;
+        } else if (node.right) {
+          node.parent.left = node.right;
+          node.right.parent = node.parent
+        } else {
+          node.parent.left = null
+        }
+      } else {
+        if (node.left) {
+          node.parent.right = node.left;
+          node.left.parent = node.parent;
+        } else if (node.right) {
+          node.parent.right = node.right;
+          node.right.parent = node.parent
+        } else {
+          node.parent.right = null
+        }
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param {RedBlackTreeNode} node 
+                                                                                                           */
+  _removeFix(node) {
+    let nodeRef = node;
+    while (node !== this.root && node.color === BLACK) {
+      if (node.parent.left === node) {
+        let brotherNode = node.parent.right;
+        if (brotherNode.color === RED) {
+          brotherNode.color = BLACK;
+          node.color = BLACK;
+          node.parent.color = RED;
+          this._rotateLeft(node.parent);
+        } else if (
+          (!brotherNode.left || brotherNode.left.color === BLACK)
+          &&
+          (!brotherNode.right || brotherNode.right.color === BLACK)
+        ) {
+          node.parent.color = RED;
+          brotherNode.color = RED;
+          node = node.parent;
+        } else if (brotherNode.left.color === RED && brotherNode.right.color === BLACK) {
+          this._rotateRight(brotherNode);
+          brotherNode.color = RED;
+          brotherNode.parent.color = BLACK;
+        } else if (brotherNode.right.color === RED) {
+          node.parent.color = BLACK;
+          brotherNode.color = RED;
+          this._rotateLeft(node.parent);
+        }
+      } else {
+        let brotherNode = node.parent.left;
+        if (brotherNode.color === RED) {
+          brotherNode.color = BLACK;
+          node.color = BLACK;
+          node.parent.color = RED;
+          this._rotateRight(node.parent);
+        } else if (
+          (!brotherNode.left || brotherNode.left.color === BLACK)
+          &&
+          (!brotherNode.right || brotherNode.right.color === BLACK)
+        ) {
+          node.parent.color = RED;
+          brotherNode.color = RED;
+          node = node.parent;
+        } else if (brotherNode.right.color === RED && brotherNode.left.color === BLACK) {
+          this._rotateLeft(brotherNode);
+          brotherNode.color = RED;
+          brotherNode.parent.color = BLACK;
+        } else if (brotherNode.left.color === RED) {
+          node.parent.color = BLACK;
+          brotherNode.color = RED;
+          this._rotateRight(node.parent);
+        }
+      }
+    }
+    node.color = RED;
+    this._removeNode(nodeRef);
+  }
+
+  /**
+   * 
    * @param {RedBlackTreeNode} node 
    */
   insertFix(node) {
@@ -148,6 +286,16 @@ class RedBlackTree {
   }
 
   /**
+   * @param {RedBlackTreeNode} node
+   * @return {RedBlackTreeNode}
+   */
+  findMin(node) {
+    if (node.left) {
+      return this.findMin(node.left)
+    } else return node
+  }
+
+  /**
    * 
    * @param {number} val 
    */
@@ -161,7 +309,7 @@ class RedBlackTree {
    * @return {boolean}
    */
   remove(val) {
-
+    this._remove(this.root, val);
   }
 
 }
