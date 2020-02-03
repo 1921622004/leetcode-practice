@@ -75,7 +75,7 @@ class RedBlackTree {
       } else {
         let minNode = this.findMin(node.right);
         node.val = minNode.val;
-        this._remove(node.right, val);
+        this._remove(node.right, minNode.val);
       }
     } else return false;
     return true
@@ -161,6 +161,7 @@ class RedBlackTree {
         } else if (brotherNode.right.color === RED) {
           node.parent.color = BLACK;
           brotherNode.color = RED;
+          brotherNode.right.color = BLACK;
           this._rotateLeft(node.parent);
         }
       } else {
@@ -186,10 +187,12 @@ class RedBlackTree {
           node.parent.color = BLACK;
           brotherNode.color = RED;
           this._rotateRight(node.parent);
+          brotherNode.left.color = BLACK;
+          node = this.root;
         }
       }
     }
-    node.color = RED;
+    node.color = BLACK;
     this._removeNode(nodeRef);
   }
 
@@ -280,7 +283,7 @@ class RedBlackTree {
       leftNode.parent = node.parent;
     } else {
       this.root = leftNode;
-      rightNode.parent = null;
+      leftNode.parent = null;
     }
     node.parent = leftNode;
   }
@@ -324,5 +327,22 @@ t.insert(14);
 t.insert(15);
 t.insert(7);
 t.insert(8);
+
+t.remove(13);
+
+const t2 = new RedBlackTree();
+t2.insert(41);
+t2.insert(38);
+t2.insert(31);
+t2.insert(12);
+t2.insert(19);
+t2.insert(8);
+
+t2.remove(8);
+t2.remove(19);
+t2.remove(12);
+t2.remove(31);
+t2.remove(38);
+t2.remove(41);
 
 module.exports = RedBlackTree;
