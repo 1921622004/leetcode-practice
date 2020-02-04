@@ -232,7 +232,6 @@ class RedBlackTree {
           node.parent.parent.color = RED;
           this._rotateLeft(node.parent.parent);
         }
-
       }
     }
     this.root.color = BLACK;
