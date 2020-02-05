@@ -168,6 +168,7 @@ class RedBlackTree {
           node.parent.color = BLACK;
           brotherNode.right.color = BLACK;
           this._rotateLeft(node.parent);
+          node = this.root;
         }
       } else {
         let brotherNode = node.parent.left;
