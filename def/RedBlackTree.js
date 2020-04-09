@@ -151,18 +151,24 @@ class RedBlackTree {
           &&
           (!brotherNode.right || brotherNode.right.color === BLACK)
         ) {
-          node.parent.color = RED;
-          brotherNode.color = RED;
-          node = node.parent;
+          if (node.parent.color === RED) {
+            brotherNode.color = RED;
+            node.parent.color = BLACK;
+            node = this.root;
+          } else {
+            brotherNode.color = RED;
+            node = node.parent;
+          }
         } else if (brotherNode.left.color === RED && brotherNode.right.color === BLACK) {
           this._rotateRight(brotherNode);
           brotherNode.color = RED;
           brotherNode.parent.color = BLACK;
         } else if (brotherNode.right.color === RED) {
+          brotherNode.color = node.parent.color;
           node.parent.color = BLACK;
-          brotherNode.color = RED;
           brotherNode.right.color = BLACK;
           this._rotateLeft(node.parent);
+          node = this.root;
         }
       } else {
         let brotherNode = node.parent.left;
@@ -176,18 +182,23 @@ class RedBlackTree {
           &&
           (!brotherNode.right || brotherNode.right.color === BLACK)
         ) {
-          node.parent.color = RED;
-          brotherNode.color = RED;
-          node = node.parent;
+          if (node.parent.color === RED) {
+            brotherNode.color = RED;
+            node.parent.color = BLACK;
+            node = this.root;
+          } else {
+            brotherNode.color = RED;
+            node = node.parent;
+          }
         } else if (brotherNode.right.color === RED && brotherNode.left.color === BLACK) {
           this._rotateLeft(brotherNode);
           brotherNode.color = RED;
           brotherNode.parent.color = BLACK;
         } else if (brotherNode.left.color === RED) {
+          brotherNode.color = node.parent.color;
           node.parent.color = BLACK;
-          brotherNode.color = RED;
-          this._rotateRight(node.parent);
           brotherNode.left.color = BLACK;
+          this._rotateRight(node.parent);
           node = this.root;
         }
       }
@@ -232,7 +243,6 @@ class RedBlackTree {
           node.parent.parent.color = RED;
           this._rotateLeft(node.parent.parent);
         }
-
       }
     }
     this.root.color = BLACK;
