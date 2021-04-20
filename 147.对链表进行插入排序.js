@@ -16,7 +16,7 @@
  * @param {ListNode} head
  * @return {ListNode}
  */
-var insertionSortList = function(head) {
+var insertionSortList = function (head) {
   let retHead = head
   let cur = head
   let listLen = 0
@@ -31,50 +31,37 @@ var insertionSortList = function(head) {
   let j = 0 // 循环次数
   let maxNode = head
   let tail
-  while (j < listLen) {
+  while (j < listLen - 1) {
+    cur = head
     for (let i = 0; i < listLen - j - 1; i++) {
-      cur = head.next
+      cur = cur.next
       tail = cur
       if (cur.val >= maxNode.val) {
         maxNode = cur
       }
     }
-    if (maxNode.prev) {
-      maxNode.prev.next = maxNode.next
-      maxNode.next.prev = maxNode.prev
-    } else {
-      head = maxNode.next
-      maxNode.next.prev = null
-    }
-    if (tail.next) {
-      maxNode.next = tail.next
-      tail.next.prev = maxNode
-      tail.next = maxNode
-      maxNode.prev = tail
-    } else {
-      tail.next = maxNode
-      maxNode.prev = tail
-      maxNode.next = null
-    }
-    j++
-  }
-  return retHead
-};
-// @lc code=end
-
-console.log(insertionSortList({
-  val: -1,
-  next: {
-    val: 5,
-    next: {
-      val: 3,
-      next: {
-        val: 5,
-        next: {
-          val: 0,
-          next: null
-        }
+    if (maxNode !== tail) {
+      if (maxNode.prev) {
+        maxNode.prev.next = maxNode.next
+        if (maxNode.next) maxNode.next.prev = maxNode.prev
+      } else {
+        head = head.next
+        maxNode.next.prev = null
+      }
+      if (tail.next) {
+        maxNode.next = tail.next
+        tail.next.prev = maxNode
+        tail.next = maxNode
+        maxNode.prev = tail
+      } else {
+        tail.next = maxNode
+        maxNode.prev = tail
+        maxNode.next = null
       }
     }
+    maxNode = head
+    j++
   }
-}))
+  return head
+};
+// @lc code=end
